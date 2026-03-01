@@ -8,27 +8,34 @@ const PHONE_DISPLAY = "+55 77 98108-2004";
 
 const Marquee = ({ text, className }: { text: string, className?: string }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const textRef = useRef<HTMLDivElement>(null);
+  const measureRef = useRef<HTMLSpanElement>(null);
   const [isOverflowing, setIsOverflowing] = useState(false);
 
   useEffect(() => {
     const checkOverflow = () => {
-      if (containerRef.current && textRef.current) {
-        setIsOverflowing(textRef.current.scrollWidth > containerRef.current.clientWidth);
+      if (containerRef.current && measureRef.current) {
+        const containerWidth = containerRef.current.clientWidth;
+        const textWidth = measureRef.current.offsetWidth;
+        setIsOverflowing(textWidth > containerWidth);
       }
     };
     
     checkOverflow();
-    const timer = setTimeout(checkOverflow, 100);
     window.addEventListener('resize', checkOverflow);
-    return () => {
-      window.removeEventListener('resize', checkOverflow);
-      clearTimeout(timer);
-    };
+    return () => window.removeEventListener('resize', checkOverflow);
   }, [text]);
 
   return (
-    <div ref={containerRef} className={`w-full overflow-hidden flex items-center justify-center ${className}`}>
+    <div ref={containerRef} className={`w-full overflow-hidden flex items-center justify-center relative ${className}`}>
+      {/* Hidden measurement element */}
+      <span 
+        ref={measureRef} 
+        className="absolute opacity-0 pointer-events-none whitespace-nowrap px-4"
+        aria-hidden="true"
+      >
+        {text}
+      </span>
+
       {isOverflowing ? (
         <div className="w-full flex justify-start">
           <motion.div
@@ -37,7 +44,7 @@ const Marquee = ({ text, className }: { text: string, className?: string }) => {
             transition={{ 
               repeat: Infinity, 
               ease: "linear", 
-              duration: Math.max(10, text.length * 0.3) 
+              duration: Math.max(10, text.length * 0.5) 
             }}
           >
             <span className="whitespace-nowrap px-8">{text}</span>
@@ -45,7 +52,7 @@ const Marquee = ({ text, className }: { text: string, className?: string }) => {
           </motion.div>
         </div>
       ) : (
-        <span ref={textRef} className="truncate px-4 block w-full text-center">
+        <span className="truncate px-4 block w-full text-center">
           {text}
         </span>
       )}
