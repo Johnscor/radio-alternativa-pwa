@@ -176,7 +176,7 @@ export default function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 flex items-center justify-center lg:p-4 overflow-hidden relative">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 lg:flex lg:items-center lg:justify-center lg:p-4 overflow-hidden relative">
       {/* Background Elements for atmosphere */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-emerald-500/10 rounded-full blur-[100px]" />
@@ -186,7 +186,7 @@ export default function App() {
       <audio ref={audioRef} src={STREAM_URL} preload="none" />
 
       <div 
-        className="relative w-full h-screen max-h-[-webkit-fill-available] lg:h-full lg:w-auto lg:aspect-[9/19.5] lg:max-h-[95vh] bg-slate-900/80 backdrop-blur-xl lg:border lg:border-white/10 lg:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col"
+        className="fixed inset-0 w-full h-full lg:relative lg:inset-auto lg:w-auto lg:h-full lg:aspect-[9/19.5] lg:max-h-[95vh] bg-slate-900/80 backdrop-blur-xl lg:border lg:border-white/10 lg:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col"
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
