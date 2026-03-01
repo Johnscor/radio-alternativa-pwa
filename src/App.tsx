@@ -176,7 +176,7 @@ export default function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 flex items-center justify-center md:p-4 overflow-hidden relative">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 flex items-center justify-center lg:p-4 overflow-hidden relative">
       {/* Background Elements for atmosphere */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-emerald-500/10 rounded-full blur-[100px]" />
@@ -186,7 +186,7 @@ export default function App() {
       <audio ref={audioRef} src={STREAM_URL} preload="none" />
 
       <div 
-        className="relative w-full h-screen md:h-full md:w-auto md:aspect-[9/19.5] md:max-h-[95vh] bg-slate-900/80 backdrop-blur-xl md:border md:border-white/10 md:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col"
+        className="relative w-full h-[100dvh] lg:h-full lg:w-auto lg:aspect-[9/19.5] lg:max-h-[95vh] bg-slate-900/80 backdrop-blur-xl lg:border lg:border-white/10 lg:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col"
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
