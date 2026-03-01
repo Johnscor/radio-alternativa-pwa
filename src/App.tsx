@@ -217,11 +217,11 @@ export default function App() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.3 }}
-              className="flex-1 flex flex-col items-center justify-between w-full px-6 pb-6 pt-2 md:px-8 md:pb-12"
+              className="flex-1 flex flex-col items-center w-full px-6 pb-8 pt-2 md:px-8 md:pb-12"
             >
               {/* Header */}
               <div className="text-center shrink-0 w-full flex flex-col items-center justify-center py-2">
-                <h1 className="text-2xl md:text-4xl font-bold text-white tracking-tight">Alternativa</h1>
+                <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">Alternativa</h1>
                 <div className="relative w-full flex items-center justify-center mt-1 md:mt-2 h-12 md:h-14">
                   <AnimatePresence mode="wait">
                     <motion.p 
@@ -232,8 +232,8 @@ export default function App() {
                       transition={{ duration: 0.5 }}
                       className={`absolute w-full text-center text-emerald-400 font-medium uppercase opacity-80 tracking-widest px-4 ${
                         showSlogan 
-                          ? "text-xs md:text-base leading-tight" 
-                          : "text-lg md:text-2xl"
+                          ? "text-sm md:text-base leading-tight" 
+                          : "text-2xl md:text-3xl"
                       }`}
                     >
                       {showSlogan ? "A rádio que mais toca você!" : "104,9 FM"}
@@ -243,8 +243,8 @@ export default function App() {
               </div>
 
               {/* Visualizer / Logo Area - Dynamic Size */}
-              <div className="relative w-full flex-1 flex items-center justify-center min-h-0 py-2">
-                <div className="relative h-[80%] max-h-[35vh] aspect-square flex items-center justify-center">
+              <div className="relative w-full flex-1 flex items-center justify-center min-h-0 py-4">
+                <div className="relative h-full max-h-[45vh] aspect-square flex items-center justify-center">
                   {/* Animated Rings */}
                   {isPlaying && (
                     <>
@@ -269,22 +269,22 @@ export default function App() {
               </div>
 
               {/* Bottom Section Wrapper */}
-              <div className="w-full flex flex-col items-center gap-4 md:gap-6 shrink-0">
+              <div className="w-full flex flex-col items-center gap-5 md:gap-6 shrink-0 mt-auto">
                 
                 {/* Now Playing Info */}
                 <div className="text-center w-full overflow-hidden px-4">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] md:text-sm font-bold uppercase tracking-wider mb-2">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs md:text-sm font-bold uppercase tracking-wider mb-3">
                     <span className={`w-2 h-2 rounded-full bg-emerald-500 ${isPlaying ? 'animate-pulse' : ''}`} />
                     {isPlaying ? 'No Ar Agora' : 'Aperte o Play'}
                   </div>
-                  <Marquee text={metadata.title} className="text-xl md:text-3xl font-semibold text-white mb-1" />
-                  <Marquee text={metadata.artist} className="text-slate-400 text-sm md:text-lg" />
+                  <Marquee text={metadata.title} className="text-2xl md:text-3xl font-semibold text-white mb-1" />
+                  <Marquee text={metadata.artist} className="text-slate-400 text-base md:text-lg" />
                 </div>
 
                 {/* Volume Control */}
-                <div className="w-full max-w-[240px] md:max-w-[200px] flex items-center gap-3 text-slate-400">
+                <div className="w-full max-w-[260px] md:max-w-[200px] flex items-center gap-3 text-slate-400">
                   <button onClick={toggleMute} className="hover:text-white transition-colors p-1">
-                    {isMuted || volume === 0 ? <VolumeX size={20} /> : <Volume2 size={20} />}
+                    {isMuted || volume === 0 ? <VolumeX size={22} /> : <Volume2 size={22} />}
                   </button>
                   <input 
                     type="range" 
@@ -293,33 +293,33 @@ export default function App() {
                     step="0.01" 
                     value={isMuted ? 0 : volume}
                     onChange={handleVolumeChange}
-                    className="w-full h-1 bg-slate-700 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-emerald-500"
+                    className="w-full h-1.5 bg-slate-700 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-emerald-500"
                   />
                 </div>
 
                 {/* Main Controls Pill */}
-                <div className="w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-full p-2 flex items-center justify-between gap-4">
+                <div className="w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-full p-2 flex items-center justify-between gap-4 mb-2">
                   <button 
                     onClick={() => setShowInfo(true)}
-                    className="w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center text-slate-300 hover:text-white hover:bg-white/10 transition-all"
+                    className="w-14 h-14 md:w-14 md:h-14 rounded-full flex items-center justify-center text-slate-300 hover:text-white hover:bg-white/10 transition-all"
                   >
-                    <Info size={20} />
+                    <Info size={24} />
                   </button>
 
                   <button 
                     onClick={togglePlay}
-                    className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white text-emerald-900 flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-lg shadow-white/10 -my-4 z-10"
+                    className="w-20 h-20 md:w-20 md:h-20 rounded-full bg-white text-emerald-900 flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-lg shadow-white/10 -my-5 z-10"
                   >
-                    {isPlaying ? <Pause size={28} fill="currentColor" /> : <Play size={28} fill="currentColor" className="ml-1" />}
+                    {isPlaying ? <Pause size={36} fill="currentColor" /> : <Play size={36} fill="currentColor" className="ml-1" />}
                   </button>
 
                   <a 
                     href={`https://wa.me/${WHATSAPP_NUMBER}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center text-slate-300 hover:text-[#25D366] hover:bg-white/10 transition-all"
+                    className="w-14 h-14 md:w-14 md:h-14 rounded-full flex items-center justify-center text-slate-300 hover:text-[#25D366] hover:bg-white/10 transition-all"
                   >
-                    <MessageCircle size={20} />
+                    <MessageCircle size={24} />
                   </a>
                 </div>
               </div>
