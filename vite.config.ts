@@ -23,12 +23,12 @@ export default defineConfig(({mode}) => {
           orientation: 'portrait',
           icons: [
             {
-              src: 'https://cdn-icons-png.flaticon.com/512/3075/3075908.png', // Placeholder radio icon
+              src: 'https://cdn-icons-png.flaticon.com/512/831/831310.png', // Radio Microphone icon
               sizes: '192x192',
               type: 'image/png'
             },
             {
-              src: 'https://cdn-icons-png.flaticon.com/512/3075/3075908.png', // Placeholder radio icon
+              src: 'https://cdn-icons-png.flaticon.com/512/831/831310.png', // Radio Microphone icon
               sizes: '512x512',
               type: 'image/png'
             }

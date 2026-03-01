@@ -6,6 +6,53 @@ const STREAM_URL = "https://stream.radioparadise.com/aac-320";
 const WHATSAPP_NUMBER = "5577981082004";
 const PHONE_DISPLAY = "+55 77 98108-2004";
 
+const Marquee = ({ text, className }: { text: string, className?: string }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
+  const [isOverflowing, setIsOverflowing] = useState(false);
+
+  useEffect(() => {
+    const checkOverflow = () => {
+      if (containerRef.current && textRef.current) {
+        setIsOverflowing(textRef.current.scrollWidth > containerRef.current.clientWidth);
+      }
+    };
+    
+    checkOverflow();
+    const timer = setTimeout(checkOverflow, 100);
+    window.addEventListener('resize', checkOverflow);
+    return () => {
+      window.removeEventListener('resize', checkOverflow);
+      clearTimeout(timer);
+    };
+  }, [text]);
+
+  return (
+    <div ref={containerRef} className={`w-full overflow-hidden flex items-center justify-center ${className}`}>
+      {isOverflowing ? (
+        <div className="w-full flex justify-start">
+          <motion.div
+            className="flex w-max"
+            animate={{ x: "-50%" }}
+            transition={{ 
+              repeat: Infinity, 
+              ease: "linear", 
+              duration: Math.max(10, text.length * 0.3) 
+            }}
+          >
+            <span className="whitespace-nowrap px-8">{text}</span>
+            <span className="whitespace-nowrap px-8">{text}</span>
+          </motion.div>
+        </div>
+      ) : (
+        <span ref={textRef} className="truncate px-4 block w-full text-center">
+          {text}
+        </span>
+      )}
+    </div>
+  );
+};
+
 export default function App() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
@@ -122,7 +169,7 @@ export default function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 flex items-center justify-center p-4 overflow-hidden relative">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 flex items-center justify-center md:p-4 overflow-hidden relative">
       {/* Background Elements for atmosphere */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-emerald-500/10 rounded-full blur-[100px]" />
@@ -132,7 +179,7 @@ export default function App() {
       <audio ref={audioRef} src={STREAM_URL} preload="none" />
 
       <div 
-        className="relative w-full h-full md:w-auto md:aspect-[9/19.5] md:max-h-[95vh] bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-[2rem] md:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col"
+        className="relative w-full h-screen md:h-full md:w-auto md:aspect-[9/19.5] md:max-h-[95vh] bg-slate-900/80 backdrop-blur-xl md:border md:border-white/10 md:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col"
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
@@ -215,13 +262,13 @@ export default function App() {
               </div>
 
               {/* Now Playing Info */}
-              <div className="text-center mb-6 md:mb-auto space-y-2 shrink-0 w-full">
+              <div className="text-center mb-6 md:mb-auto space-y-2 shrink-0 w-full overflow-hidden">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-wider mb-2 md:mb-4">
                   <span className={`w-2 h-2 rounded-full bg-emerald-500 ${isPlaying ? 'animate-pulse' : ''}`} />
                   {isPlaying ? 'No Ar Agora' : 'Aperte o Play'}
                 </div>
-                <h2 className="text-xl md:text-2xl font-semibold text-white px-4 truncate w-full">{metadata.title}</h2>
-                <p className="text-slate-400 text-sm md:text-base px-4 truncate w-full">{metadata.artist}</p>
+                <Marquee text={metadata.title} className="text-xl md:text-2xl font-semibold text-white" />
+                <Marquee text={metadata.artist} className="text-slate-400 text-sm md:text-base" />
               </div>
 
               {/* Volume Control */}
