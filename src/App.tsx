@@ -186,7 +186,7 @@ export default function App() {
       <audio ref={audioRef} src={STREAM_URL} preload="none" />
 
       <div 
-        className="relative w-full h-[100dvh] lg:h-full lg:w-auto lg:aspect-[9/19.5] lg:max-h-[95vh] bg-slate-900/80 backdrop-blur-xl lg:border lg:border-white/10 lg:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col"
+        className="relative w-full h-screen max-h-[-webkit-fill-available] lg:h-full lg:w-auto lg:aspect-[9/19.5] lg:max-h-[95vh] bg-slate-900/80 backdrop-blur-xl lg:border lg:border-white/10 lg:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col"
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
