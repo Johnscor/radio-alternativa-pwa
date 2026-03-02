@@ -198,12 +198,12 @@ export default function App() {
           <div className="flex gap-4">
             <button 
               onClick={() => setShowInfo(false)}
-              className={`w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-current transition-all duration-300 ${!showInfo ? 'bg-white scale-110' : 'bg-transparent hover:bg-white/20'}`}
+              className={`w-8 h-8 rounded-full border-2 border-current transition-all duration-300 ${!showInfo ? 'bg-white scale-110' : 'bg-transparent hover:bg-white/20'}`}
               aria-label="Ir para Player"
             />
             <button 
               onClick={() => setShowInfo(true)}
-              className={`w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-current transition-all duration-300 ${showInfo ? 'bg-white scale-110' : 'bg-transparent hover:bg-white/20'}`}
+              className={`w-8 h-8 rounded-full border-2 border-current transition-all duration-300 ${showInfo ? 'bg-white scale-110' : 'bg-transparent hover:bg-white/20'}`}
               aria-label="Ir para Informações"
             />
           </div>
@@ -221,7 +221,7 @@ export default function App() {
             >
               {/* Header */}
               <div className="text-center shrink-0 w-full flex flex-col items-center justify-center py-2">
-                <h1 className="text-6xl md:text-8xl font-bold text-white tracking-tight">Alternativa</h1>
+                <h1 className="text-6xl font-bold text-white tracking-tight">Alternativa</h1>
                 <div className="relative w-full flex items-center justify-center mt-3 h-20 md:h-24">
                   <AnimatePresence mode="wait">
                     <motion.p 
@@ -232,8 +232,8 @@ export default function App() {
                       transition={{ duration: 0.5 }}
                       className={`absolute w-full text-center text-emerald-400 font-medium uppercase opacity-80 tracking-widest px-2 ${
                         showSlogan 
-                          ? "text-2xl md:text-4xl leading-tight" 
-                          : "text-5xl md:text-7xl"
+                          ? "text-2xl leading-tight" 
+                          : "text-5xl"
                       }`}
                     >
                       {showSlogan ? "A rádio que mais toca você!" : "104,9 FM"}
@@ -273,12 +273,12 @@ export default function App() {
                 
                 {/* Now Playing Info */}
                 <div className="text-center w-full overflow-hidden px-2">
-                  <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xl md:text-2xl font-bold uppercase tracking-wider mb-4">
+                  <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xl font-bold uppercase tracking-wider mb-4">
                     <span className={`w-5 h-5 rounded-full bg-emerald-500 ${isPlaying ? 'animate-pulse' : ''}`} />
                     {isPlaying ? 'No Ar Agora' : 'Aperte o Play'}
                   </div>
-                  <Marquee text={metadata.title} className="text-[2.7rem] md:text-[4rem] font-semibold text-white mb-3" />
-                  <Marquee text={metadata.artist} className="text-slate-400 text-3xl md:text-4xl" />
+                  <Marquee text={metadata.title} className="text-[2.7rem] font-semibold text-white mb-3" />
+                  <Marquee text={metadata.artist} className="text-slate-400 text-3xl" />
                 </div>
 
                 {/* Volume Control */}
@@ -335,14 +335,14 @@ export default function App() {
             >
               {/* Header */}
               <div className="text-center mb-8 md:mb-10 shrink-0">
-                <h1 className="text-[4rem] md:text-[5rem] font-bold text-white tracking-tight">Sobre Nós</h1>
-                <p className="text-emerald-400 font-medium text-[2rem] md:text-[2.5rem] tracking-widest uppercase opacity-80 mt-2">Alternativa FM</p>
+                <h1 className="text-[4rem] font-bold text-white tracking-tight">Sobre Nós</h1>
+                <p className="text-emerald-400 font-medium text-[2rem] tracking-widest uppercase opacity-80 mt-2">Alternativa FM</p>
               </div>
 
               {/* Logo Small */}
               <div className="flex justify-center mb-8 md:mb-10 shrink-0">
-                <div className="w-40 h-40 md:w-48 md:h-48 rounded-full bg-gradient-to-b from-slate-800 to-slate-950 bg-no-repeat bg-center border-2 border-emerald-500/20 flex items-center justify-center">
-                  <span className="text-[3.5rem] md:text-[4.5rem] font-black text-white">104,9</span>
+                <div className="w-40 h-40 rounded-full bg-gradient-to-b from-slate-800 to-slate-950 bg-no-repeat bg-center border-2 border-emerald-500/20 flex items-center justify-center">
+                  <span className="text-[3.5rem] font-black text-white">104,9</span>
                 </div>
               </div>
 
