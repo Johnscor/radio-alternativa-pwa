@@ -193,17 +193,17 @@ export default function App() {
       >
         
         {/* Status Bar Mockup */}
-        <div className="flex justify-between items-center px-6 py-4 md:px-8 md:py-6 text-xl font-medium text-white/60 shrink-0 z-20">
+        <div className="flex justify-between items-center px-6 py-4 md:px-8 md:py-6 text-2xl font-medium text-white/60 shrink-0 z-20">
           <span>{currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
           <div className="flex gap-4">
             <button 
               onClick={() => setShowInfo(false)}
-              className={`w-6 h-6 md:w-8 md:h-8 rounded-full border-2 border-current transition-all duration-300 ${!showInfo ? 'bg-white scale-110' : 'bg-transparent hover:bg-white/20'}`}
+              className={`w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-current transition-all duration-300 ${!showInfo ? 'bg-white scale-110' : 'bg-transparent hover:bg-white/20'}`}
               aria-label="Ir para Player"
             />
             <button 
               onClick={() => setShowInfo(true)}
-              className={`w-6 h-6 md:w-8 md:h-8 rounded-full border-2 border-current transition-all duration-300 ${showInfo ? 'bg-white scale-110' : 'bg-transparent hover:bg-white/20'}`}
+              className={`w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-current transition-all duration-300 ${showInfo ? 'bg-white scale-110' : 'bg-transparent hover:bg-white/20'}`}
               aria-label="Ir para Informações"
             />
           </div>
@@ -217,12 +217,12 @@ export default function App() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.3 }}
-              className="flex-1 flex flex-col items-center w-full px-6 pb-8 pt-2 md:px-8 md:pb-12"
+              className="flex-1 flex flex-col items-center w-full px-4 pb-8 pt-2 md:px-8 md:pb-12"
             >
               {/* Header */}
               <div className="text-center shrink-0 w-full flex flex-col items-center justify-center py-2">
-                <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tight">Alternativa</h1>
-                <div className="relative w-full flex items-center justify-center mt-2 h-16 md:h-20">
+                <h1 className="text-6xl md:text-8xl font-bold text-white tracking-tight">Alternativa</h1>
+                <div className="relative w-full flex items-center justify-center mt-3 h-20 md:h-24">
                   <AnimatePresence mode="wait">
                     <motion.p 
                       key={showSlogan ? "slogan" : "frequency"}
@@ -230,10 +230,10 @@ export default function App() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10, transition: { duration: 0.2 } }}
                       transition={{ duration: 0.5 }}
-                      className={`absolute w-full text-center text-emerald-400 font-medium uppercase opacity-80 tracking-widest px-4 ${
+                      className={`absolute w-full text-center text-emerald-400 font-medium uppercase opacity-80 tracking-widest px-2 ${
                         showSlogan 
-                          ? "text-xl md:text-2xl leading-tight" 
-                          : "text-4xl md:text-5xl"
+                          ? "text-2xl md:text-4xl leading-tight" 
+                          : "text-5xl md:text-7xl"
                       }`}
                     >
                       {showSlogan ? "A rádio que mais toca você!" : "104,9 FM"}
@@ -244,7 +244,7 @@ export default function App() {
 
               {/* Visualizer / Logo Area - Dynamic Size */}
               <div className="relative w-full flex-1 flex items-center justify-center min-h-0 py-4">
-                <div className="relative h-full max-h-[35vh] aspect-square flex items-center justify-center">
+                <div className="relative h-full max-h-[30vh] aspect-square flex items-center justify-center">
                   {/* Animated Rings */}
                   {isPlaying && (
                     <>
@@ -272,19 +272,19 @@ export default function App() {
               <div className="w-full flex flex-col items-center gap-6 md:gap-8 shrink-0 mt-auto">
                 
                 {/* Now Playing Info */}
-                <div className="text-center w-full overflow-hidden px-4">
-                  <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-lg md:text-xl font-bold uppercase tracking-wider mb-4">
-                    <span className={`w-4 h-4 rounded-full bg-emerald-500 ${isPlaying ? 'animate-pulse' : ''}`} />
+                <div className="text-center w-full overflow-hidden px-2">
+                  <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xl md:text-2xl font-bold uppercase tracking-wider mb-4">
+                    <span className={`w-5 h-5 rounded-full bg-emerald-500 ${isPlaying ? 'animate-pulse' : ''}`} />
                     {isPlaying ? 'No Ar Agora' : 'Aperte o Play'}
                   </div>
-                  <Marquee text={metadata.title} className="text-4xl md:text-6xl font-semibold text-white mb-3" />
-                  <Marquee text={metadata.artist} className="text-slate-400 text-2xl md:text-3xl" />
+                  <Marquee text={metadata.title} className="text-5xl md:text-7xl font-semibold text-white mb-3" />
+                  <Marquee text={metadata.artist} className="text-slate-400 text-3xl md:text-4xl" />
                 </div>
 
                 {/* Volume Control */}
-                <div className="w-full max-w-[320px] md:max-w-[300px] flex items-center gap-6 text-slate-400">
+                <div className="w-full max-w-[340px] md:max-w-[320px] flex items-center gap-6 text-slate-400">
                   <button onClick={toggleMute} className="hover:text-white transition-colors p-2">
-                    {isMuted || volume === 0 ? <VolumeX size={40} /> : <Volume2 size={40} />}
+                    {isMuted || volume === 0 ? <VolumeX size={48} /> : <Volume2 size={48} />}
                   </button>
                   <input 
                     type="range" 
@@ -293,33 +293,33 @@ export default function App() {
                     step="0.01" 
                     value={isMuted ? 0 : volume}
                     onChange={handleVolumeChange}
-                    className="w-full h-3 bg-slate-700 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-8 [&::-webkit-slider-thumb]:h-8 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-emerald-500"
+                    className="w-full h-4 bg-slate-700 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-10 [&::-webkit-slider-thumb]:h-10 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-emerald-500"
                   />
                 </div>
 
                 {/* Main Controls Pill */}
-                <div className="w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-full p-4 flex items-center justify-between gap-6 mb-6">
+                <div className="w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-full p-4 flex items-center justify-between gap-4 mb-6">
                   <button 
                     onClick={() => setShowInfo(true)}
-                    className="w-20 h-20 rounded-full flex items-center justify-center text-slate-300 hover:text-white hover:bg-white/10 transition-all"
+                    className="w-24 h-24 rounded-full flex items-center justify-center text-slate-300 hover:text-white hover:bg-white/10 transition-all"
                   >
-                    <Info size={40} />
+                    <Info size={48} />
                   </button>
 
                   <button 
                     onClick={togglePlay}
-                    className="w-32 h-32 rounded-full bg-white text-emerald-900 flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-lg shadow-white/10 -my-8 z-10"
+                    className="w-36 h-36 rounded-full bg-white text-emerald-900 flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-lg shadow-white/10 -my-10 z-10"
                   >
-                    {isPlaying ? <Pause size={64} fill="currentColor" /> : <Play size={64} fill="currentColor" className="ml-2" />}
+                    {isPlaying ? <Pause size={72} fill="currentColor" /> : <Play size={72} fill="currentColor" className="ml-2" />}
                   </button>
 
                   <a 
                     href={`https://wa.me/${WHATSAPP_NUMBER}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-20 h-20 rounded-full flex items-center justify-center text-slate-300 hover:text-[#25D366] hover:bg-white/10 transition-all"
+                    className="w-24 h-24 rounded-full flex items-center justify-center text-slate-300 hover:text-[#25D366] hover:bg-white/10 transition-all"
                   >
-                    <MessageCircle size={40} />
+                    <MessageCircle size={48} />
                   </a>
                 </div>
               </div>
@@ -335,55 +335,55 @@ export default function App() {
             >
               {/* Header */}
               <div className="text-center mb-8 md:mb-10 shrink-0">
-                <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight">Sobre Nós</h1>
-                <p className="text-emerald-400 font-medium text-xl md:text-2xl tracking-widest uppercase opacity-80 mt-2">Alternativa FM</p>
+                <h1 className="text-5xl md:text-6xl font-bold text-white tracking-tight">Sobre Nós</h1>
+                <p className="text-emerald-400 font-medium text-2xl md:text-3xl tracking-widest uppercase opacity-80 mt-2">Alternativa FM</p>
               </div>
 
               {/* Logo Small */}
               <div className="flex justify-center mb-8 md:mb-10 shrink-0">
-                <div className="w-32 h-32 md:w-36 md:h-36 rounded-full bg-gradient-to-b from-slate-800 to-slate-950 bg-no-repeat bg-center border-2 border-emerald-500/20 flex items-center justify-center">
-                  <span className="text-3xl md:text-4xl font-black text-white">104,9</span>
+                <div className="w-40 h-40 md:w-48 md:h-48 rounded-full bg-gradient-to-b from-slate-800 to-slate-950 bg-no-repeat bg-center border-2 border-emerald-500/20 flex items-center justify-center">
+                  <span className="text-4xl md:text-5xl font-black text-white">104,9</span>
                 </div>
               </div>
 
               {/* Content */}
-              <div className="flex-1 min-h-0 overflow-y-auto pr-2 custom-scrollbar space-y-8 md:space-y-10 text-slate-300 text-2xl leading-relaxed">
+              <div className="flex-1 min-h-0 overflow-y-auto pr-2 custom-scrollbar space-y-8 md:space-y-10 text-slate-300 text-3xl leading-relaxed">
                 <div className="bg-white/5 p-8 rounded-3xl border border-white/5">
                   <p>
                     A rádio do povo para o povo! A Alternativa 104,9 FM é a sua companhia diária com muita música, informação e alegria. Estamos sempre conectados com você.
                   </p>
                 </div>
 
-                <div className="space-y-8">
+                <div className="space-y-10">
                   <div className="flex items-start gap-6">
-                    <div className="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 shrink-0">
-                      <MapPin size={32} />
+                    <div className="w-20 h-20 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 shrink-0">
+                      <MapPin size={40} />
                     </div>
                     <div>
-                      <h3 className="text-white font-medium mb-2 text-2xl">Localização</h3>
-                      <p className="text-slate-400 text-xl">Candiba, Bahia, Brasil</p>
+                      <h3 className="text-white font-medium mb-2 text-3xl">Localização</h3>
+                      <p className="text-slate-400 text-2xl">Candiba, Bahia, Brasil</p>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-6">
-                    <div className="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 shrink-0">
-                      <MessageCircle size={32} />
+                    <div className="w-20 h-20 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 shrink-0">
+                      <MessageCircle size={40} />
                     </div>
                     <div>
-                      <h3 className="text-white font-medium mb-2 text-2xl">WhatsApp</h3>
-                      <a href={`https://wa.me/${WHATSAPP_NUMBER}`} className="text-slate-400 hover:text-emerald-400 transition-colors text-xl">
+                      <h3 className="text-white font-medium mb-2 text-3xl">WhatsApp</h3>
+                      <a href={`https://wa.me/${WHATSAPP_NUMBER}`} className="text-slate-400 hover:text-emerald-400 transition-colors text-2xl">
                         {PHONE_DISPLAY}
                       </a>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-6">
-                    <div className="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 shrink-0">
-                      <Phone size={32} />
+                    <div className="w-20 h-20 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 shrink-0">
+                      <Phone size={40} />
                     </div>
                     <div>
-                      <h3 className="text-white font-medium mb-2 text-2xl">Telefone</h3>
-                      <a href={`tel:+${WHATSAPP_NUMBER}`} className="text-slate-400 hover:text-emerald-400 transition-colors text-xl">
+                      <h3 className="text-white font-medium mb-2 text-3xl">Telefone</h3>
+                      <a href={`tel:+${WHATSAPP_NUMBER}`} className="text-slate-400 hover:text-emerald-400 transition-colors text-2xl">
                         {PHONE_DISPLAY}
                       </a>
                     </div>
@@ -392,12 +392,12 @@ export default function App() {
               </div>
 
               {/* Back Button */}
-              <div className="w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-full p-4 flex items-center justify-center shrink-0 mt-8">
+              <div className="w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-full p-6 flex items-center justify-center shrink-0 mt-8">
                 <button 
                   onClick={() => setShowInfo(false)}
-                  className="w-24 h-24 rounded-full flex items-center justify-center text-white bg-emerald-600 hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-900/20"
+                  className="w-28 h-28 rounded-full flex items-center justify-center text-white bg-emerald-600 hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-900/20"
                 >
-                  <Play size={48} className="rotate-180" />
+                  <Play size={56} className="rotate-180" />
                 </button>
               </div>
             </motion.div>
