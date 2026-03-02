@@ -277,7 +277,7 @@ export default function App() {
                     <span className={`w-5 h-5 rounded-full bg-emerald-500 ${isPlaying ? 'animate-pulse' : ''}`} />
                     {isPlaying ? 'No Ar Agora' : 'Aperte o Play'}
                   </div>
-                  <Marquee text={metadata.title} className="text-5xl md:text-7xl font-semibold text-white mb-3" />
+                  <Marquee text={metadata.title} className="text-[2.7rem] md:text-[4rem] font-semibold text-white mb-3" />
                   <Marquee text={metadata.artist} className="text-slate-400 text-3xl md:text-4xl" />
                 </div>
 
@@ -335,19 +335,19 @@ export default function App() {
             >
               {/* Header */}
               <div className="text-center mb-8 md:mb-10 shrink-0">
-                <h1 className="text-5xl md:text-6xl font-bold text-white tracking-tight">Sobre Nós</h1>
-                <p className="text-emerald-400 font-medium text-2xl md:text-3xl tracking-widest uppercase opacity-80 mt-2">Alternativa FM</p>
+                <h1 className="text-[4rem] md:text-[5rem] font-bold text-white tracking-tight">Sobre Nós</h1>
+                <p className="text-emerald-400 font-medium text-[2rem] md:text-[2.5rem] tracking-widest uppercase opacity-80 mt-2">Alternativa FM</p>
               </div>
 
               {/* Logo Small */}
               <div className="flex justify-center mb-8 md:mb-10 shrink-0">
                 <div className="w-40 h-40 md:w-48 md:h-48 rounded-full bg-gradient-to-b from-slate-800 to-slate-950 bg-no-repeat bg-center border-2 border-emerald-500/20 flex items-center justify-center">
-                  <span className="text-4xl md:text-5xl font-black text-white">104,9</span>
+                  <span className="text-[3.5rem] md:text-[4.5rem] font-black text-white">104,9</span>
                 </div>
               </div>
 
               {/* Content */}
-              <div className="flex-1 min-h-0 overflow-y-auto pr-2 custom-scrollbar space-y-8 md:space-y-10 text-slate-300 text-3xl leading-relaxed">
+              <div className="flex-1 min-h-0 overflow-y-auto pr-2 custom-scrollbar space-y-8 md:space-y-10 text-slate-300 text-[2.5rem] leading-relaxed">
                 <div className="bg-white/5 p-8 rounded-3xl border border-white/5">
                   <p>
                     A rádio do povo para o povo! A Alternativa 104,9 FM é a sua companhia diária com muita música, informação e alegria. Estamos sempre conectados com você.
@@ -360,8 +360,8 @@ export default function App() {
                       <MapPin size={40} />
                     </div>
                     <div>
-                      <h3 className="text-white font-medium mb-2 text-3xl">Localização</h3>
-                      <p className="text-slate-400 text-2xl">Candiba, Bahia, Brasil</p>
+                      <h3 className="text-white font-medium mb-2 text-[2.5rem]">Localização</h3>
+                      <p className="text-slate-400 text-[2rem]">Candiba, Bahia, Brasil</p>
                     </div>
                   </div>
 
@@ -370,8 +370,8 @@ export default function App() {
                       <MessageCircle size={40} />
                     </div>
                     <div>
-                      <h3 className="text-white font-medium mb-2 text-3xl">WhatsApp</h3>
-                      <a href={`https://wa.me/${WHATSAPP_NUMBER}`} className="text-slate-400 hover:text-emerald-400 transition-colors text-2xl">
+                      <h3 className="text-white font-medium mb-2 text-[2.5rem]">WhatsApp</h3>
+                      <a href={`https://wa.me/${WHATSAPP_NUMBER}`} className="text-slate-400 hover:text-emerald-400 transition-colors text-[2rem]">
                         {PHONE_DISPLAY}
                       </a>
                     </div>
@@ -382,8 +382,8 @@ export default function App() {
                       <Phone size={40} />
                     </div>
                     <div>
-                      <h3 className="text-white font-medium mb-2 text-3xl">Telefone</h3>
-                      <a href={`tel:+${WHATSAPP_NUMBER}`} className="text-slate-400 hover:text-emerald-400 transition-colors text-2xl">
+                      <h3 className="text-white font-medium mb-2 text-[2.5rem]">Telefone</h3>
+                      <a href={`tel:+${WHATSAPP_NUMBER}`} className="text-slate-400 hover:text-emerald-400 transition-colors text-[2rem]">
                         {PHONE_DISPLAY}
                       </a>
                     </div>
