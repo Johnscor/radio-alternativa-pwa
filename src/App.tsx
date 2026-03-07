@@ -76,6 +76,8 @@ export default function App() {
   const [showSlogan, setShowSlogan] = useState(false);
   const [appClosed, setAppClosed] = useState(false);
   
+  const [showToast, setShowToast] = useState(false);
+
   // Minimum swipe distance (in px)
   const minSwipeDistance = 50;
 
@@ -119,6 +121,7 @@ export default function App() {
   }, []);
 
   // History Trap to prevent accidental closing on Back button
+  // Simulates "Home" button behavior by keeping app open
   useEffect(() => {
     // Push a state to the history stack
     window.history.pushState(null, '', window.location.href);
@@ -126,9 +129,14 @@ export default function App() {
     const handlePopState = () => {
       // When back button is pressed, push state again to keep user in app
       window.history.pushState(null, '', window.location.href);
-      // Optionally, you could use this to close the Info screen if open
+      
+      // If Info screen is open, close it
       if (showInfo) {
         setShowInfo(false);
+      } else {
+        // If on main screen, show toast instructing to use Home button
+        setShowToast(true);
+        setTimeout(() => setShowToast(false), 3000);
       }
     };
 
@@ -255,6 +263,20 @@ export default function App() {
       </div>
 
       <audio ref={audioRef} src={STREAM_URL} preload="none" />
+
+      {/* Toast Notification */}
+      <AnimatePresence>
+        {showToast && (
+          <motion.div
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+            className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-slate-800/90 text-white px-6 py-3 rounded-full shadow-lg border border-white/10 text-center text-lg lg:text-sm backdrop-blur-md"
+          >
+            Pressione <strong>Início</strong> para minimizar
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <div 
         className="fixed inset-0 w-full h-full lg:relative lg:inset-auto lg:w-auto lg:h-full lg:aspect-[9/19.5] lg:max-h-[95vh] bg-slate-900/80 backdrop-blur-xl lg:border lg:border-white/10 lg:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col"
