@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Play, Pause, Info, Phone, MapPin, MessageCircle, Volume2, VolumeX, X } from 'lucide-react';
+import { Play, Pause, Info, Phone, MapPin, MessageCircle, Volume2, VolumeX } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 const STREAM_URL = "https://stream.radioparadise.com/aac-320";
@@ -74,7 +74,6 @@ export default function App() {
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const [showSlogan, setShowSlogan] = useState(false);
-  const [appClosed, setAppClosed] = useState(false);
   
   // Minimum swipe distance (in px)
   const minSwipeDistance = 50;
@@ -117,45 +116,6 @@ export default function App() {
     }, 5000);
     return () => clearInterval(sloganTimer);
   }, []);
-
-  // History Trap to prevent accidental closing on Back button
-  useEffect(() => {
-    // Push a state to the history stack
-    window.history.pushState(null, '', window.location.href);
-
-    const handlePopState = () => {
-      // When back button is pressed, push state again to keep user in app
-      window.history.pushState(null, '', window.location.href);
-      // Optionally, you could use this to close the Info screen if open
-      if (showInfo) {
-        setShowInfo(false);
-      }
-    };
-
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, [showInfo]);
-
-  // Media Session API for background playback
-  useEffect(() => {
-    if ('mediaSession' in navigator) {
-      navigator.mediaSession.metadata = new MediaMetadata({
-        title: metadata.title,
-        artist: metadata.artist,
-        artwork: [
-          { src: metadata.cover, sizes: '96x96', type: 'image/jpeg' },
-          { src: metadata.cover, sizes: '128x128', type: 'image/jpeg' },
-          { src: metadata.cover, sizes: '192x192', type: 'image/jpeg' },
-          { src: metadata.cover, sizes: '256x256', type: 'image/jpeg' },
-          { src: metadata.cover, sizes: '384x384', type: 'image/jpeg' },
-          { src: metadata.cover, sizes: '512x512', type: 'image/jpeg' },
-        ]
-      });
-
-      navigator.mediaSession.setActionHandler('play', togglePlay);
-      navigator.mediaSession.setActionHandler('pause', togglePlay);
-    }
-  }, [metadata, isPlaying]);
 
   useEffect(() => {
     const fetchMetadata = async () => {
@@ -210,41 +170,10 @@ export default function App() {
     }
   };
 
-  const handleCloseApp = () => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-    }
-    setIsPlaying(false);
-    setAppClosed(true);
-    // Try to close window (may be blocked by browser)
-    try {
-      window.close();
-    } catch (e) {
-      console.log("Cannot close window via script");
-    }
-  };
-
   useEffect(() => {
     // Attempt to auto-play if permitted, but usually requires interaction
     // audioRef.current?.play().catch(() => setIsPlaying(false));
   }, []);
-
-  if (appClosed) {
-    return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
-        <div className="text-center text-white">
-          <h1 className="text-3xl font-bold mb-4">Aplicativo Encerrado</h1>
-          <p className="text-slate-400 mb-8">Você pode fechar esta aba agora.</p>
-          <button 
-            onClick={() => window.location.reload()}
-            className="px-6 py-3 bg-emerald-600 rounded-full font-bold hover:bg-emerald-500 transition-colors"
-          >
-            Reabrir Aplicativo
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 lg:flex lg:items-center lg:justify-center lg:p-4 overflow-hidden relative">
@@ -265,16 +194,7 @@ export default function App() {
         
         {/* Status Bar Mockup */}
         <div className="flex justify-between items-center px-6 py-4 lg:px-8 lg:py-6 text-2xl lg:text-base font-medium text-white/60 shrink-0 z-20">
-          <div className="flex items-center gap-4 lg:gap-3">
-            <button 
-              onClick={handleCloseApp}
-              className="p-1 -ml-1 hover:text-white transition-colors"
-              aria-label="Fechar Aplicativo"
-            >
-              <X className="w-8 h-8 lg:w-5 lg:h-5" />
-            </button>
-            <span>{currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-          </div>
+          <span>{currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
           <div className="flex gap-4 lg:gap-2">
             <button 
               onClick={() => setShowInfo(false)}
