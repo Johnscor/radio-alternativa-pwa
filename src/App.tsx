@@ -127,26 +127,52 @@ export default function App() {
       }
     };
 
-    // Adiciona a primeira trava ao iniciar
+    // Adiciona múltiplas travas para evitar que cliques rápidos no botão voltar fechem o app
+    pushTrap();
     pushTrap();
 
     const handlePopState = () => {
-      setShowInfo((prev) => {
-        if (prev) {
-          // Se a tela de info estiver aberta, fecha ela e recoloca a trava
-          pushTrap();
-          return false;
-        } else {
-          // Se estiver na tela principal, apenas recoloca a trava para não fechar o app
-          pushTrap();
-          return prev;
-        }
-      });
+      // Sempre repõe a trava imediatamente
+      pushTrap();
+      // Se a tela de info estiver aberta, fecha
+      setShowInfo(false);
     };
 
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
+
+  // Media Session API - CRÍTICO para manter o áudio tocando em segundo plano no Android
+  useEffect(() => {
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: metadata.title,
+        artist: metadata.artist,
+        artwork: [
+          { src: metadata.cover, sizes: '96x96', type: 'image/jpeg' },
+          { src: metadata.cover, sizes: '128x128', type: 'image/jpeg' },
+          { src: metadata.cover, sizes: '192x192', type: 'image/jpeg' },
+          { src: metadata.cover, sizes: '256x256', type: 'image/jpeg' },
+          { src: metadata.cover, sizes: '384x384', type: 'image/jpeg' },
+          { src: metadata.cover, sizes: '512x512', type: 'image/jpeg' },
+        ]
+      });
+
+      navigator.mediaSession.setActionHandler('play', () => {
+        if (audioRef.current) {
+          audioRef.current.play();
+          setIsPlaying(true);
+        }
+      });
+      
+      navigator.mediaSession.setActionHandler('pause', () => {
+        if (audioRef.current) {
+          audioRef.current.pause();
+          setIsPlaying(false);
+        }
+      });
+    }
+  }, [metadata]);
 
   useEffect(() => {
     const fetchMetadata = async () => {
