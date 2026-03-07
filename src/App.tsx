@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Play, Pause, Info, Phone, MapPin, MessageCircle, Volume2, VolumeX } from 'lucide-react';
+import { Play, Pause, Info, Phone, MapPin, MessageCircle, Volume2, VolumeX, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 const STREAM_URL = "https://stream.radioparadise.com/aac-320";
@@ -74,6 +74,7 @@ export default function App() {
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const [showSlogan, setShowSlogan] = useState(false);
+  const [appClosed, setAppClosed] = useState(false);
   
   // Minimum swipe distance (in px)
   const minSwipeDistance = 50;
@@ -116,6 +117,45 @@ export default function App() {
     }, 5000);
     return () => clearInterval(sloganTimer);
   }, []);
+
+  // History Trap to prevent accidental closing on Back button
+  useEffect(() => {
+    // Push a state to the history stack
+    window.history.pushState(null, '', window.location.href);
+
+    const handlePopState = () => {
+      // When back button is pressed, push state again to keep user in app
+      window.history.pushState(null, '', window.location.href);
+      // Optionally, you could use this to close the Info screen if open
+      if (showInfo) {
+        setShowInfo(false);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [showInfo]);
+
+  // Media Session API for background playback
+  useEffect(() => {
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: metadata.title,
+        artist: metadata.artist,
+        artwork: [
+          { src: metadata.cover, sizes: '96x96', type: 'image/jpeg' },
+          { src: metadata.cover, sizes: '128x128', type: 'image/jpeg' },
+          { src: metadata.cover, sizes: '192x192', type: 'image/jpeg' },
+          { src: metadata.cover, sizes: '256x256', type: 'image/jpeg' },
+          { src: metadata.cover, sizes: '384x384', type: 'image/jpeg' },
+          { src: metadata.cover, sizes: '512x512', type: 'image/jpeg' },
+        ]
+      });
+
+      navigator.mediaSession.setActionHandler('play', togglePlay);
+      navigator.mediaSession.setActionHandler('pause', togglePlay);
+    }
+  }, [metadata, isPlaying]);
 
   useEffect(() => {
     const fetchMetadata = async () => {
@@ -170,10 +210,41 @@ export default function App() {
     }
   };
 
+  const handleCloseApp = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
+    setIsPlaying(false);
+    setAppClosed(true);
+    // Try to close window (may be blocked by browser)
+    try {
+      window.close();
+    } catch (e) {
+      console.log("Cannot close window via script");
+    }
+  };
+
   useEffect(() => {
     // Attempt to auto-play if permitted, but usually requires interaction
     // audioRef.current?.play().catch(() => setIsPlaying(false));
   }, []);
+
+  if (appClosed) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
+        <div className="text-center text-white">
+          <h1 className="text-3xl font-bold mb-4">Aplicativo Encerrado</h1>
+          <p className="text-slate-400 mb-8">Você pode fechar esta aba agora.</p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="px-6 py-3 bg-emerald-600 rounded-full font-bold hover:bg-emerald-500 transition-colors"
+          >
+            Reabrir Aplicativo
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 lg:flex lg:items-center lg:justify-center lg:p-4 overflow-hidden relative">
@@ -193,17 +264,26 @@ export default function App() {
       >
         
         {/* Status Bar Mockup */}
-        <div className="flex justify-between items-center px-6 py-4 md:px-8 md:py-6 text-2xl font-medium text-white/60 shrink-0 z-20">
-          <span>{currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-          <div className="flex gap-4">
+        <div className="flex justify-between items-center px-6 py-4 lg:px-8 lg:py-6 text-2xl lg:text-base font-medium text-white/60 shrink-0 z-20">
+          <div className="flex items-center gap-4 lg:gap-3">
+            <button 
+              onClick={handleCloseApp}
+              className="p-1 -ml-1 hover:text-white transition-colors"
+              aria-label="Fechar Aplicativo"
+            >
+              <X className="w-8 h-8 lg:w-5 lg:h-5" />
+            </button>
+            <span>{currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+          </div>
+          <div className="flex gap-4 lg:gap-2">
             <button 
               onClick={() => setShowInfo(false)}
-              className={`w-8 h-8 rounded-full border-2 border-current transition-all duration-300 ${!showInfo ? 'bg-white scale-110' : 'bg-transparent hover:bg-white/20'}`}
+              className={`w-8 h-8 lg:w-4 lg:h-4 rounded-full border-2 lg:border border-current transition-all duration-300 ${!showInfo ? 'bg-white scale-110' : 'bg-transparent hover:bg-white/20'}`}
               aria-label="Ir para Player"
             />
             <button 
               onClick={() => setShowInfo(true)}
-              className={`w-8 h-8 rounded-full border-2 border-current transition-all duration-300 ${showInfo ? 'bg-white scale-110' : 'bg-transparent hover:bg-white/20'}`}
+              className={`w-8 h-8 lg:w-4 lg:h-4 rounded-full border-2 lg:border border-current transition-all duration-300 ${showInfo ? 'bg-white scale-110' : 'bg-transparent hover:bg-white/20'}`}
               aria-label="Ir para Informações"
             />
           </div>
@@ -217,12 +297,12 @@ export default function App() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.3 }}
-              className="flex-1 flex flex-col items-center w-full px-4 pb-8 pt-2 md:px-8 md:pb-12"
+              className="flex-1 flex flex-col items-center w-full px-4 pb-8 pt-2 lg:px-8 lg:pb-12"
             >
               {/* Header */}
               <div className="text-center shrink-0 w-full flex flex-col items-center justify-center py-2">
-                <h1 className="text-6xl font-bold text-white tracking-tight">Alternativa</h1>
-                <div className="relative w-full flex items-center justify-center mt-3 h-20 md:h-24">
+                <h1 className="text-7xl lg:text-5xl font-bold text-white tracking-tight">Alternativa</h1>
+                <div className="relative w-full flex items-center justify-center mt-3 lg:mt-2 h-20 lg:h-14">
                   <AnimatePresence mode="wait">
                     <motion.p 
                       key={showSlogan ? "slogan" : "frequency"}
@@ -232,8 +312,8 @@ export default function App() {
                       transition={{ duration: 0.5 }}
                       className={`absolute w-full text-center text-emerald-400 font-medium uppercase opacity-80 tracking-widest px-2 ${
                         showSlogan 
-                          ? "text-2xl leading-tight" 
-                          : "text-5xl"
+                          ? "text-3xl lg:text-lg leading-tight" 
+                          : "text-6xl lg:text-4xl"
                       }`}
                     >
                       {showSlogan ? "A rádio que mais toca você!" : "104,9 FM"}
@@ -244,7 +324,7 @@ export default function App() {
 
               {/* Visualizer / Logo Area - Dynamic Size */}
               <div className="relative w-full flex-1 flex items-center justify-center min-h-0 py-4">
-                <div className="relative h-full max-h-[30vh] aspect-square flex items-center justify-center">
+                <div className="relative h-full max-h-[35vh] lg:max-h-[40vh] aspect-square flex items-center justify-center">
                   {/* Animated Rings */}
                   {isPlaying && (
                     <>
@@ -261,7 +341,7 @@ export default function App() {
                       className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-overlay transition-all duration-1000 pointer-events-none select-none"
                     />
                     <div className="relative z-10 flex flex-col items-center justify-center">
-                      <span className="text-6xl font-black text-white/90 tracking-tighter"></span>
+                      <span className="text-6xl lg:text-4xl font-black text-white/90 tracking-tighter"></span>
                       <span className="text-emerald-400 font-bold text-sm uppercase tracking-widest mt-1"></span>
                     </div>
                   </div>
@@ -269,22 +349,22 @@ export default function App() {
               </div>
 
               {/* Bottom Section Wrapper */}
-              <div className="w-full flex flex-col items-center gap-6 md:gap-8 shrink-0 mt-auto">
+              <div className="w-full flex flex-col items-center gap-6 lg:gap-6 shrink-0 mt-auto">
                 
                 {/* Now Playing Info */}
                 <div className="text-center w-full overflow-hidden px-2">
-                  <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xl font-bold uppercase tracking-wider mb-4">
-                    <span className={`w-5 h-5 rounded-full bg-emerald-500 ${isPlaying ? 'animate-pulse' : ''}`} />
+                  <div className="inline-flex items-center gap-3 lg:gap-2 px-6 lg:px-3 py-2 lg:py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xl lg:text-xs font-bold uppercase tracking-wider mb-4 lg:mb-2">
+                    <span className={`w-5 h-5 lg:w-2 lg:h-2 rounded-full bg-emerald-500 ${isPlaying ? 'animate-pulse' : ''}`} />
                     {isPlaying ? 'No Ar Agora' : 'Aperte o Play'}
                   </div>
-                  <Marquee text={metadata.title} className="text-[2.7rem] font-semibold text-white mb-3" />
-                  <Marquee text={metadata.artist} className="text-slate-400 text-3xl" />
+                  <Marquee text={metadata.title} className="text-[3.5rem] lg:text-3xl font-semibold text-white mb-3 lg:mb-1" />
+                  <Marquee text={metadata.artist} className="text-slate-400 text-4xl lg:text-lg" />
                 </div>
 
                 {/* Volume Control */}
-                <div className="w-full max-w-[340px] md:max-w-[320px] flex items-center gap-6 text-slate-400">
-                  <button onClick={toggleMute} className="hover:text-white transition-colors p-2">
-                    {isMuted || volume === 0 ? <VolumeX size={48} /> : <Volume2 size={48} />}
+                <div className="w-full max-w-[340px] lg:max-w-[200px] flex items-center gap-6 lg:gap-3 text-slate-400">
+                  <button onClick={toggleMute} className="hover:text-white transition-colors p-2 lg:p-1">
+                    {isMuted || volume === 0 ? <VolumeX className="w-12 h-12 lg:w-5 lg:h-5" /> : <Volume2 className="w-12 h-12 lg:w-5 lg:h-5" />}
                   </button>
                   <input 
                     type="range" 
@@ -293,33 +373,33 @@ export default function App() {
                     step="0.01" 
                     value={isMuted ? 0 : volume}
                     onChange={handleVolumeChange}
-                    className="w-full h-4 bg-slate-700 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-10 [&::-webkit-slider-thumb]:h-10 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-emerald-500"
+                    className="w-full h-4 lg:h-1.5 bg-slate-700 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-10 [&::-webkit-slider-thumb]:h-10 [&::-webkit-slider-thumb]:lg:w-4 [&::-webkit-slider-thumb]:lg:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-emerald-500"
                   />
                 </div>
 
                 {/* Main Controls Pill */}
-                <div className="w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-full p-4 flex items-center justify-between gap-4 mb-6">
+                <div className="w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-full p-4 lg:p-2 flex items-center justify-between gap-4 lg:gap-4 mb-6 lg:mb-0">
                   <button 
                     onClick={() => setShowInfo(true)}
-                    className="w-24 h-24 rounded-full flex items-center justify-center text-slate-300 hover:text-white hover:bg-white/10 transition-all"
+                    className="w-24 h-24 lg:w-12 lg:h-12 rounded-full flex items-center justify-center text-slate-300 hover:text-white hover:bg-white/10 transition-all"
                   >
-                    <Info size={48} />
+                    <Info className="w-12 h-12 lg:w-5 lg:h-5" />
                   </button>
 
                   <button 
                     onClick={togglePlay}
-                    className="w-36 h-36 rounded-full bg-white text-emerald-900 flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-lg shadow-white/10 -my-10 z-10"
+                    className="w-36 h-36 lg:w-20 lg:h-20 rounded-full bg-white text-emerald-900 flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-lg shadow-white/10 -my-10 lg:-my-4 z-10"
                   >
-                    {isPlaying ? <Pause size={72} fill="currentColor" /> : <Play size={72} fill="currentColor" className="ml-2" />}
+                    {isPlaying ? <Pause className="w-20 h-20 lg:w-8 lg:h-8" fill="currentColor" /> : <Play className="w-20 h-20 lg:w-8 lg:h-8 ml-2 lg:ml-1" fill="currentColor" />}
                   </button>
 
                   <a 
                     href={`https://wa.me/${WHATSAPP_NUMBER}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-24 h-24 rounded-full flex items-center justify-center text-slate-300 hover:text-[#25D366] hover:bg-white/10 transition-all"
+                    className="w-24 h-24 lg:w-12 lg:h-12 rounded-full flex items-center justify-center text-slate-300 hover:text-[#25D366] hover:bg-white/10 transition-all"
                   >
-                    <MessageCircle size={48} />
+                    <MessageCircle className="w-12 h-12 lg:w-5 lg:h-5" />
                   </a>
                 </div>
               </div>
@@ -331,59 +411,59 @@ export default function App() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
               transition={{ duration: 0.3 }}
-              className="flex-1 flex flex-col px-6 pb-8 pt-2 md:px-8 md:pb-12 h-full overflow-hidden"
+              className="flex-1 flex flex-col px-6 pb-8 pt-2 lg:px-8 lg:pb-12 h-full overflow-hidden"
             >
               {/* Header */}
-              <div className="text-center mb-8 md:mb-10 shrink-0">
-                <h1 className="text-[4rem] font-bold text-white tracking-tight">Sobre Nós</h1>
-                <p className="text-emerald-400 font-medium text-[2rem] tracking-widest uppercase opacity-80 mt-2">Alternativa FM</p>
+              <div className="text-center mb-8 lg:mb-6 shrink-0">
+                <h1 className="text-[4rem] lg:text-4xl font-bold text-white tracking-tight">Sobre Nós</h1>
+                <p className="text-emerald-400 font-medium text-[2rem] lg:text-sm tracking-widest uppercase opacity-80 mt-2 lg:mt-1">Alternativa FM</p>
               </div>
 
               {/* Logo Small */}
-              <div className="flex justify-center mb-8 md:mb-10 shrink-0">
-                <div className="w-40 h-40 rounded-full bg-gradient-to-b from-slate-800 to-slate-950 bg-no-repeat bg-center border-2 border-emerald-500/20 flex items-center justify-center">
-                  <span className="text-[3.5rem] font-black text-white">104,9</span>
+              <div className="flex justify-center mb-8 lg:mb-6 shrink-0">
+                <div className="w-40 h-40 lg:w-24 lg:h-24 rounded-full bg-gradient-to-b from-slate-800 to-slate-950 bg-no-repeat bg-center border-2 border-emerald-500/20 flex items-center justify-center">
+                  <span className="text-[3.5rem] lg:text-2xl font-black text-white">104,9</span>
                 </div>
               </div>
 
               {/* Content */}
-              <div className="flex-1 min-h-0 overflow-y-auto pr-2 custom-scrollbar space-y-8 md:space-y-10 text-slate-300 text-[2.5rem] leading-relaxed">
-                <div className="bg-white/5 p-8 rounded-3xl border border-white/5">
+              <div className="flex-1 min-h-0 overflow-y-auto pr-2 custom-scrollbar space-y-8 lg:space-y-4 text-slate-300 text-[2.5rem] lg:text-base leading-relaxed">
+                <div className="bg-white/5 p-8 lg:p-4 rounded-3xl lg:rounded-xl border border-white/5">
                   <p>
                     A rádio do povo para o povo! A Alternativa 104,9 FM é a sua companhia diária com muita música, informação e alegria. Estamos sempre conectados com você.
                   </p>
                 </div>
 
-                <div className="space-y-10">
-                  <div className="flex items-start gap-6">
-                    <div className="w-20 h-20 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 shrink-0">
-                      <MapPin size={40} />
+                <div className="space-y-10 lg:space-y-4">
+                  <div className="flex items-start gap-6 lg:gap-3">
+                    <div className="w-20 h-20 lg:w-8 lg:h-8 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 shrink-0">
+                      <MapPin className="w-10 h-10 lg:w-4 lg:h-4" />
                     </div>
                     <div>
-                      <h3 className="text-white font-medium mb-2 text-[2.5rem]">Localização</h3>
-                      <p className="text-slate-400 text-[2rem]">Candiba, Bahia, Brasil</p>
+                      <h3 className="text-white font-medium mb-2 lg:mb-1 text-[2.5rem] lg:text-base">Localização</h3>
+                      <p className="text-slate-400 text-[2rem] lg:text-sm">Candiba, Bahia, Brasil</p>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-6">
-                    <div className="w-20 h-20 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 shrink-0">
-                      <MessageCircle size={40} />
+                  <div className="flex items-start gap-6 lg:gap-3">
+                    <div className="w-20 h-20 lg:w-8 lg:h-8 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 shrink-0">
+                      <MessageCircle className="w-10 h-10 lg:w-4 lg:h-4" />
                     </div>
                     <div>
-                      <h3 className="text-white font-medium mb-2 text-[2.5rem]">WhatsApp</h3>
-                      <a href={`https://wa.me/${WHATSAPP_NUMBER}`} className="text-slate-400 hover:text-emerald-400 transition-colors text-[2rem]">
+                      <h3 className="text-white font-medium mb-2 lg:mb-1 text-[2.5rem] lg:text-base">WhatsApp</h3>
+                      <a href={`https://wa.me/${WHATSAPP_NUMBER}`} className="text-slate-400 hover:text-emerald-400 transition-colors text-[2rem] lg:text-sm">
                         {PHONE_DISPLAY}
                       </a>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-6">
-                    <div className="w-20 h-20 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 shrink-0">
-                      <Phone size={40} />
+                  <div className="flex items-start gap-6 lg:gap-3">
+                    <div className="w-20 h-20 lg:w-8 lg:h-8 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 shrink-0">
+                      <Phone className="w-10 h-10 lg:w-4 lg:h-4" />
                     </div>
                     <div>
-                      <h3 className="text-white font-medium mb-2 text-[2.5rem]">Telefone</h3>
-                      <a href={`tel:+${WHATSAPP_NUMBER}`} className="text-slate-400 hover:text-emerald-400 transition-colors text-[2rem]">
+                      <h3 className="text-white font-medium mb-2 lg:mb-1 text-[2.5rem] lg:text-base">Telefone</h3>
+                      <a href={`tel:+${WHATSAPP_NUMBER}`} className="text-slate-400 hover:text-emerald-400 transition-colors text-[2rem] lg:text-sm">
                         {PHONE_DISPLAY}
                       </a>
                     </div>
@@ -392,12 +472,12 @@ export default function App() {
               </div>
 
               {/* Back Button */}
-              <div className="w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-full p-6 flex items-center justify-center shrink-0 mt-8">
+              <div className="w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-full p-6 lg:p-2 flex items-center justify-center shrink-0 mt-8 lg:mt-4">
                 <button 
                   onClick={() => setShowInfo(false)}
-                  className="w-28 h-28 rounded-full flex items-center justify-center text-white bg-emerald-600 hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-900/20"
+                  className="w-28 h-28 lg:w-12 lg:h-12 rounded-full flex items-center justify-center text-white bg-emerald-600 hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-900/20"
                 >
-                  <Play size={56} className="rotate-180" />
+                  <Play className="w-14 h-14 lg:w-5 lg:h-5 rotate-180" />
                 </button>
               </div>
             </motion.div>
