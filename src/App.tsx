@@ -117,6 +117,37 @@ export default function App() {
     return () => clearInterval(sloganTimer);
   }, []);
 
+  // Trava do botão voltar (History Trap) para PWA
+  useEffect(() => {
+    const pushTrap = () => {
+      try {
+        window.history.pushState({ trap: true }, '', window.location.href);
+      } catch (e) {
+        console.warn("History API blocked:", e);
+      }
+    };
+
+    // Adiciona a primeira trava ao iniciar
+    pushTrap();
+
+    const handlePopState = () => {
+      setShowInfo((prev) => {
+        if (prev) {
+          // Se a tela de info estiver aberta, fecha ela e recoloca a trava
+          pushTrap();
+          return false;
+        } else {
+          // Se estiver na tela principal, apenas recoloca a trava para não fechar o app
+          pushTrap();
+          return prev;
+        }
+      });
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
   useEffect(() => {
     const fetchMetadata = async () => {
       try {
@@ -258,7 +289,7 @@ export default function App() {
                     <img 
                       src={metadata.cover}
                       alt="Capa do Álbum"
-                      className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-overlay transition-all duration-1000 pointer-events-none select-none"
+                      className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay transition-all duration-1000 pointer-events-none select-none"
                     />
                     <div className="relative z-10 flex flex-col items-center justify-center">
                       <span className="text-6xl lg:text-4xl font-black text-white/90 tracking-tighter"></span>
