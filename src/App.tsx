@@ -124,11 +124,19 @@ export default function App() {
   // Simulates "Home" button behavior by keeping app open
   useEffect(() => {
     // Push a state to the history stack
-    window.history.pushState(null, '', window.location.href);
+    try {
+      window.history.pushState(null, '', window.location.href);
+    } catch (e) {
+      console.warn("pushState not supported or blocked in this environment", e);
+    }
 
     const handlePopState = () => {
       // When back button is pressed, push state again to keep user in app
-      window.history.pushState(null, '', window.location.href);
+      try {
+        window.history.pushState(null, '', window.location.href);
+      } catch (e) {
+        console.warn("pushState not supported or blocked in this environment", e);
+      }
       
       // If Info screen is open, close it
       if (showInfo) {
